@@ -240,3 +240,80 @@ def pad_awkward_array(x: ak.Array, nan_value = 0.):
             maximum = length
 
     return ak.fill_none(ak.pad_none(x, maximum, axis=2, clip=True), value=nan_value)
+
+def audio_tokenizer(x: torch.Tensor, sample_rate: float, token_length: float,
+                     pad_value = 0., return_sizes = False, verbose = True):
+
+    """Takes as input a (N,length) tensor containing the audio time series,
+    pads it in order to make the length a multiple of the token length
+    and returns the tokenized (N, token_size, padded_length/token_size) tensor
+    
+    Arguments
+    ---------
+    x : torch.Tensor
+        The tensor to tokenize
+    sample_rate : int 
+        the sampling rate in Hz of the audio track
+    token_length : float
+        the length of a toke in ms
+    pad_value : float 
+        the value used to pad
+        default = 0.
+    return_sizes : bool
+        if it is True, the function returns the number of tokens and
+        padded length as well as the tokenized tensor
+    verbose : bool
+        if it is True, progress bars and info are displayed
+
+    Returns
+    --------
+    The tokenized tensor : torch.Tensor
+    The number of tokens : int
+    The size of a token : int
+    The padded length num_tkns * tk_size : int
+    """
+    shape_as_array = x.numpy().shape #shape of tensor if tensor is transformed to numpy array
+    if len(shape_as_array) == 3 and any(np.array(shape_as_array) == 1):
+        x = x.squeeze()
+
+    tk_size = int(np.round(1e-3 * sample_rate * token_length))
+    num_tkns = int(np.ceil(x.shape[1]/tk_size))
+    padded_len = num_tkns*tk_size
+    if verbose:
+        logger.info(f'Token size {tk_size}; Padded length {padded_len}\n;'
+                    f'Number of tokens {num_tkns}')
+
+    x = torch.nn.functional.pad(x, (0,padded_len-x.shape[1]),'constant', pad_value)
+
+    if return_sizes:
+        return x.view(x.shape[0],padded_len//tk_size, tk_size), num_tkns, tk_size, padded_len
+
+    return x.view(x.shape[0],padded_len//tk_size, tk_size)
+
+def downsample_tensor(x, sr, target_sr):
+    """Downsamples x along its first dimension using scipy.signal.decimate.
+    Returns the downsampled signal as a torch.Tensor
+
+    Arguments
+    ---------
+    x : array_like or torch.Tensor
+        The 2D array or tensor to downsample
+    sr : int 
+        the sampling rate in Hz of the audio track
+   target_sr : int
+        the target sampling rate in Hz
+
+    Returns
+    --------
+    The downsampled tensor: torch.Tensor
+    """
+    shape_as_array = x.numpy().shape #shape of tensor if tensor is transformed to numpy array
+    if len(shape_as_array) == 3 and any(np.array(shape_as_array) == 1):
+        x = x.squeeze()
+
+    if sr == target_sr:
+        return x
+
+    q = sr//target_sr
+    ar = scipy.signal.decimate(x, q, axis =1)
+    return torch.tensor(ar.copy())
