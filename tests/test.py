@@ -16,14 +16,14 @@ from utils.utils import import_audio_dataset, file_names_map, encode_file_names,
 def test_get_file_list():
     """Unit test for get_file_list"""
     
-    file_list = get_file_list('test_dir', '.wav')
+    file_list = get_file_list('/home/npic/computing_methods/coding/cmepda_exam/tests/test_dir/ravdess', '.wav')
     assert len(file_list) == 7
     assert all([path.suffix == '.wav' for path in file_list])
 
 def test_import_audio_dataset():
     """Unit test for import_audio_dataset"""
 
-    array, sr = import_audio_dataset('test_dir', '.wav', verbose = False)
+    array, sr = import_audio_dataset('/home/npic/computing_methods/coding/cmepda_exam/tests/test_dir/ravdess', '.wav', verbose = False)
     assert sr == 48000
     assert isinstance(array, ak.highlevel.Array)
     assert max([len(np.asarray(np.ravel(ts))) for ts in array]) == 187388
