@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 import torch
 
-from utils.utils import import_audio_dataset, file_names_map, encode_file_names, \
+from audio_transformers_utils.utils import import_audio_dataset, file_names_map, encode_file_names, \
     pad_awkward_array, audio_tokenizer, downsample_tensor, get_file_list
 
 def test_get_file_list():
