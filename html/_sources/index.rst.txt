@@ -8,8 +8,7 @@ Welcome to cmepda_audio_transformer's documentation!
 
 .. toctree::
    :maxdepth: 2
-
-   api
+   :caption: Contents:
 
 
 

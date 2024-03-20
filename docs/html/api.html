@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Arguments &#8212; cmepda_audio_transformer 0.0.a0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <script src="_static/documentation_options.js?v=0db699b9"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <p id="module-audio_transformers_utils.utils">Utilities for audio dataset import and preparation for tasks
+involving transformers.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="audio_transformers_utils.utils.DatasetError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">audio_transformers_utils.utils.</span></span><span class="sig-name descname"><span class="pre">DatasetError</span></span><a class="headerlink" href="#audio_transformers_utils.utils.DatasetError" title="Link to this definition">¶</a></dt>
+<dd><p>Class for error in
+dataset selection</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="audio_transformers_utils.utils.audio_tokenizer">
+<span class="sig-prename descclassname"><span class="pre">audio_transformers_utils.utils.</span></span><span class="sig-name descname"><span class="pre">audio_tokenizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#audio_transformers_utils.utils.audio_tokenizer" title="Link to this definition">¶</a></dt>
+<dd><p>Takes as input a (N,length) tensor containing the audio time series,
+pads it in order to make the length a multiple of the token length
+and returns the tokenized (N, token_size, padded_length/token_size) tensor</p>
+<section id="arguments">
+<h1>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">¶</a></h1>
+<dl class="simple">
+<dt>x<span class="classifier">torch.Tensor</span></dt><dd><p>The tensor to tokenize</p>
+</dd>
+<dt>sample_rate<span class="classifier">int </span></dt><dd><p>the sampling rate in Hz of the audio track</p>
+</dd>
+<dt>token_length<span class="classifier">float</span></dt><dd><p>the length of a toke in ms</p>
+</dd>
+<dt>pad_value<span class="classifier">float </span></dt><dd><p>the value used to pad
+default = 0.</p>
+</dd>
+<dt>return_sizes<span class="classifier">bool</span></dt><dd><p>if it is True, the function returns the number of tokens and
+padded length as well as the tokenized tensor</p>
+</dd>
+<dt>verbose<span class="classifier">bool</span></dt><dd><p>if it is True, progress bars and info are displayed</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h1>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h1>
+<p>The tokenized tensor : torch.Tensor
+The number of tokens : int
+The size of a token : int
+The padded length num_tkns * tk_size : int</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="audio_transformers_utils.utils.downsample_tensor">
+<span class="sig-prename descclassname"><span class="pre">audio_transformers_utils.utils.</span></span><span class="sig-name descname"><span class="pre">downsample_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_sr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#audio_transformers_utils.utils.downsample_tensor" title="Link to this definition">¶</a></dt>
+<dd><dl>
+<dt>Downsamples x along its first dimension using scipy.signal.decimate.</dt><dd><p>Returns the downsampled signal as a torch.Tensor</p>
+<dl class="simple">
+<dt>x<span class="classifier">array_like or torch.Tensor</span></dt><dd><p>The 2D array or tensor to downsample</p>
+</dd>
+<dt>sr<span class="classifier">int </span></dt><dd><p>the sampling rate in Hz of the audio track</p>
+</dd>
+</dl>
+</dd>
+<dt>target_sr<span class="classifier">int</span></dt><dd><blockquote>
+<div><p>the target sampling rate in Hz</p>
+</div></blockquote>
+<p>The downsampled tensor: torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="audio_transformers_utils.utils.encode_file_names">
+<span class="sig-prename descclassname"><span class="pre">audio_transformers_utils.utils.</span></span><span class="sig-name descname"><span class="pre">encode_file_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#audio_transformers_utils.utils.encode_file_names" title="Link to this definition">¶</a></dt>
+<dd><p>Extends file_names_map functionalities adding specifical features
+for the two datasets used in the project: ravdess and crema.</p>
+<section id="id1">
+<h1>Arguments<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h1>
+<dl class="simple">
+<dt>files<span class="classifier">list[Path] or str</span></dt><dd><p>The list of file paths as returned by get_file_list.</p>
+</dd>
+<dt>encoding<span class="classifier">dict or string</span></dt><dd><p>The encoding dictionary or the dataset name for the two 
+built in dataset encodings: ‘ravdess’, ‘crema’.</p>
+</dd>
+<dt><a href="#id2"><span class="problematic" id="id3">**</span></a>kwargs: separator<span class="classifier">str</span></dt><dd><p>The separator used in the file names</p>
+</dd>
+</dl>
+</section>
+<section id="return">
+<h1>Return<a class="headerlink" href="#return" title="Link to this heading">¶</a></h1>
+<p>The pandas dataframe containing the encoded categorical variables: pd.dataframe</p>
+</section>
+<section id="raises">
+<h1>Raises<a class="headerlink" href="#raises" title="Link to this heading">¶</a></h1>
+<p>NoDatasetError
+if a string is passed as input and it is not the name of a 
+built in dataset: ‘ravdess’ or ‘crema’.
+TypeError
+if “encoding” is not of type str or dict</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="audio_transformers_utils.utils.file_names_map">
+<span class="sig-prename descclassname"><span class="pre">audio_transformers_utils.utils.</span></span><span class="sig-name descname"><span class="pre">file_names_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enc_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#audio_transformers_utils.utils.file_names_map" title="Link to this definition">¶</a></dt>
+<dd><p>Encodes the information contained in the file names.
+Returns a pandas dataframe containing all the categorical variables
+as encoded in file names.</p>
+<section id="id4">
+<h1>Arguments<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h1>
+<dl class="simple">
+<dt>files<span class="classifier">list[Path]</span></dt><dd><p>The list of file paths as returned by get_file_list.</p>
+</dd>
+<dt>separator<span class="classifier">str</span></dt><dd><p>The separator used in the file names.</p>
+</dd>
+<dt>encoding<span class="classifier">dict or string</span></dt><dd><p>The encoding dictionary.</p>
+</dd>
+</dl>
+</section>
+<section id="id5">
+<h1>Return<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h1>
+<p>The pandas dataframe containing the encoded categorical variables: pd.DataFrame</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="audio_transformers_utils.utils.get_file_list">
+<span class="sig-prename descclassname"><span class="pre">audio_transformers_utils.utils.</span></span><span class="sig-name descname"><span class="pre">get_file_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#audio_transformers_utils.utils.get_file_list" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Returns a sorted list containing the paths to all the files contained in ‘dir_path’</dt><dd><p>with ‘suffix’ as extension.</p>
+</dd>
+</dl>
+<p>This will accept as input a path to the directory where files are located
+in the form of ‘/directory/’ and the suffix.</p>
+<section id="id6">
+<h1>Arguments<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h1>
+<dl class="simple">
+<dt>path<span class="classifier">string</span></dt><dd><p>The path to the directory.</p>
+</dd>
+<dt>suffix<span class="classifier">string</span></dt><dd><p>The files extension i.e. ‘.wav’, ‘.pdf’ etc</p>
+</dd>
+</dl>
+</section>
+<section id="id7">
+<h1>Return<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h1>
+<blockquote>
+<div><p>The list of relative file paths : list[Path]</p>
+</div></blockquote>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="audio_transformers_utils.utils.import_audio_dataset">
+<span class="sig-prename descclassname"><span class="pre">audio_transformers_utils.utils.</span></span><span class="sig-name descname"><span class="pre">import_audio_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#audio_transformers_utils.utils.import_audio_dataset" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Returns the audio dataset as an awkward array</dt><dd><p>along with the sample rate of the audio files.</p>
+</dd>
+</dl>
+<p>This will accept as input a path to the directory where files are located
+along with the extension of the files.
+Please note this will work only with codecs supported by Soundfile.</p>
+<section id="id8">
+<h1>Arguments<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h1>
+<dl class="simple">
+<dt>dir_path<span class="classifier">string</span></dt><dd><p>The path to the directory.</p>
+</dd>
+<dt>suffix<span class="classifier">string</span></dt><dd><p>The files extension i.e. ‘.wav’, ‘.mp3’ etc</p>
+</dd>
+<dt>verbose<span class="classifier">bool</span></dt><dd><p>if it is True, progress bars and info are displayed</p>
+</dd>
+</dl>
+</section>
+<section id="id9">
+<h1>Return<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h1>
+<p>The dataset array : awkward.Array
+The sample rate in Hz: float</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="audio_transformers_utils.utils.pad_awkward_array">
+<span class="sig-prename descclassname"><span class="pre">audio_transformers_utils.utils.</span></span><span class="sig-name descname"><span class="pre">pad_awkward_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#audio_transformers_utils.utils.pad_awkward_array" title="Link to this definition">¶</a></dt>
+<dd><p>Takes as input a 3D awkward array,
+returns a 3D awkward.Array padded with nan_value
+to have all the rows of the same length.</p>
+<section id="id10">
+<h1>Arguments<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h1>
+<dl class="simple">
+<dt>x<span class="classifier">ak.Array</span></dt><dd><p>The array to pad.</p>
+</dd>
+<dt>nan_value<span class="classifier">float</span></dt><dd><p>the value used to pad</p>
+</dd>
+</dl>
+</section>
+<section id="id11">
+<h1>Return<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h1>
+<p>The padded array : ak.Array</p>
+</section>
+</dd></dl>
+
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">cmepda_audio_transformer</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, Niccolò Picchiarelli.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/api.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
