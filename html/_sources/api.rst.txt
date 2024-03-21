@@ -1,2 +1,0 @@
-.. automodule:: cmepda_exam.audio_transformers_utils.utils
-   :members:
